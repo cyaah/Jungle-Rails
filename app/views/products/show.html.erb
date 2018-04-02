@@ -21,8 +21,58 @@
           <dt>Quantity</dt>
           <dd><%= @product.quantity %></dd>
           <dt>Price</dt>
-          <dd><%= @product.price %></dd>
+          <dd><%= @product.price %></dd> 
         </dl>
+
+        <% if current_user %>
+        <%= form_for [@product, @review] do |f| %>
+          <div>
+          <% if f.object.errors.any? %>
+            <p> The following errors occured</p>
+            <ul>
+            <% f.object.errors.full_messages.each do |error| %>
+            <li><%= error %></li>
+        <% end %>
+      </ul>
+    </div>
+    <% end %>
+        <div class='row'>
+          <dl class ='dl-horizontal'>
+          <dt><%= f.label :Review %> </dt>
+          <dd><%= f.text_area :description %> </dd>
+
+          </dl>        
+        </div>
+        <div class='row'>
+          <dl class = 'dl-horizontal'>
+         <dt> <%= f.label :rating %> </dt>
+         <dd> <%= f.select :rating, options_for_select(1..5) %> </dd>
+         <dd> <%= f.submit 'Submit' %> </dd>
+          </dl>
+        </div>
+        <% end %>
+      <% end %>
+
+
+        <div class='row'>
+          <dl class ='dl-horizontal'>
+          <% @product.reviews.order(created_at: :desc).each do |review| %>
+          <dt>User :</dt>
+          <dd><%= review.user_id %></dd>
+          <dt>Review</dt>
+          <dd><%=review.rating %></dd>
+          <dt>Rating</dt>
+          <dd><%= review.description %></dd>
+        <% end %>
+           <% if current_user %>
+                  <% if current_user.id === @review.user_id %>
+                    <%= button_to "delete", product_review_path(@product.id, review.id), :method => :delete %>
+                  <% end %>
+          <% end %>
+        <!--   <% @product.reviews.each do |review| %>
+          <% end %>
+ -->        </dl>
+        </div>
       </div>
     </div>
 
